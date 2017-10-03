@@ -21545,16 +21545,20 @@ AAAAADARijQAAAAAMJH/AgNWn2kmN6DyAAAAAElFTkSuQmCC
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong><br>
   
-K-means:<br>
-Conceptually simple, easy to implement<br>
- 
-Gaussian Mixture Model:<br>
-Conceptually simple.<br>
-Good for data that follows a Gaussian distribution, which is probably what we have in this case<br>
-Works well for data with overlapping clusters.<br>
-Might not converge, but we can force it to do so if there is little gain after more iterations.<br>
-The Gaussian Mixture Model can also avoid local minima when number of parameters is low. (<a href="http://www.iith.ac.in/~jbala/publications/book_chapters/feschrift_bj_fk.pdf">http://www.iith.ac.in/~jbala/publications/book_chapters/feschrift_bj_fk.pdf</a>)</p>
-<p>The better algorithm in this case is the Gaussian Mixture Model. There is a high likelihood of our data ending up in more than 1 cluster given PCA results seen previously. For instance, dimension 3 and 2 were significant indicators of Fresh food purchases.
+<strong>K-means:</strong><br>
+Simple and relatively efficent, with O(tkn), where n = num objects, k = num clusters, t = number of iterations<br>
+The algorithm terminates by itself, making usage easy.<br>
+Each object is clearly assigned to only one cluster.<br>
+Outliers greatly affect accuracy of clusters.</p>
+<p> 
+<strong>Gaussian Mixture Model:</strong><br>
+Good for data that follows a Gaussian distribution, which is probably what we have in this case</p>
+<p>Is more computationally expensive as compared to K-means.<br>
+The Gaussian Mixture model uses the Expectation Maximization (EM) algorithm. EM is by nature iterative and does not terimnate by itself. EM in general requires more iterations to reach approximate convergence compared to the K-means algorithm, and each cycle requires significantly more computation.</p>
+<p>There is a need to decide on a termination criterion for the algorithm, making it more difficult to implement.</p>
+<p>All objects have a probability of being in each cluster. As such, this algorthm works well for data with overlapping clusters. On the other hand, having probabilities for each cluster also makes little sense for data that belong in distict groups. This idea of a soft cluster makes assigning objects to clusters more complex than k-means.</p>
+<p><strong>Conclusion:</strong><br>
+The better algorithm in this case is the Gaussian Mixture Model. There is a high likelihood of our data ending up in more than 1 cluster given PCA results seen previously. For instance, dimension 3 and 2 were significant indicators of Fresh food purchases.
  </p>
 
 </div>
@@ -22631,9 +22635,11 @@ Sample point 2 predicted to be in Cluster 1
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>We cannot assume that the change affects all customers equally.<br>
-Customers that make large purchases of fresh food might be greatly affected.</p>
-<p>The distributor could first change its delivery service for the segment which uses less fresh food. (Segment 0)</p>
+<p>We cannot assume that the change affects all customers equally.</p>
+<p>Having the above in mind, we should pick a small sample from the segments we have discovered and offer them the 3 days a week option.</p>
+<p>A favorable response in a segment sample would mean that changing the delivery service to 3 days a week could be a viable choice.<br>
+A negative response would mean that the change greatly affects the this segment, it requires the 5 days a week arrangment.</p>
+<p>The firm can then extend the 3 days a week test to segments that have responded favorably. Segments on the 3 day a week service can have a different price plan as compared to segments on the 5 day a week service.</p>
 
 </div>
 </div>
@@ -22658,7 +22664,8 @@ Customers that make large purchases of fresh food might be greatly affected.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong><br>
-We could compare the means of all features of the new data, and see which segment mean they are closest to. That would be the segment each customer would belong in.</p>
+We could train a supervised learning algorithm using the customer segement data we have above, with estimated product spending as features and the customer segment as the target.<br>
+The algorithm will then be used to predict the customer segment of new customers.</p>
 
 </div>
 </div>
