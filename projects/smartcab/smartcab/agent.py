@@ -35,6 +35,10 @@ class LearningAgent(Agent):
         self.planner.route_to(destination)
 
         self.epsilon = max(self.epsilon - 0.05, 0.00)
+
+        if testing:
+            self.epsilon = 0
+            self.alpha = 0
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
@@ -57,7 +61,7 @@ class LearningAgent(Agent):
         # With the hand-engineered features, this learning process gets entirely negated.
 
         # Set 'state' as a tuple of relevant data for the agent        
-        state = (waypoint, inputs)
+        state = (waypoint, inputs['left'], inputs['oncoming'], inputs['light'])
 
         return state
 
@@ -65,9 +69,6 @@ class LearningAgent(Agent):
         """ The get_max_Q function is called when the agent is asked to find the
             maximum Q-value of all actions based on the 'state' the smartcab is in. """
 
-        ########### 
-        ## TODO ##
-        ###########
         # Calculate the maximum Q-value of all actions for a given state
         actions = self.Q[state]
         maxQ = max(actions.values())
@@ -87,7 +88,7 @@ class LearningAgent(Agent):
         # If it is not, create a new dictionary for that state
         #   Then, for each action available, set the initial Q-value to 0.0
         if self.learning:
-            if self.Q[state] is None:
+            if not state in self.Q:
                 self.Q[state] = create_entry()
 
         return
@@ -115,9 +116,9 @@ class LearningAgent(Agent):
             action = random.choice(self.valid_actions)
         else:
             max_q = self.get_maxQ(state)
-            best_actions = filter((lambda _, value: value >= max_q),
+            best_actions = filter((lambda (_, value): value >= max_q),
                                   self.Q[state].items())
-            action = random.choice(best_actions)
+            action = random.choice(best_actions)[0]
 
         return action
 
