@@ -1,7 +1,6 @@
 import random
 import math
 from environment import Agent, Environment
-from functools import reduce
 from planner import RoutePlanner
 from simulator import Simulator
 
@@ -10,7 +9,7 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """
 
-    def __init__(self, env, learning=False, epsilon=0.8, alpha=0.975):
+    def __init__(self, env, learning=False, epsilon=1.0, alpha=0.5):
         super(LearningAgent, self).__init__(env)  # Set the agent in the evironment
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
@@ -23,6 +22,7 @@ class LearningAgent(Agent):
 
         # Set any additional class parameters as needed
         self.num_trials = 1
+        self.a = 0.005
 
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
@@ -34,8 +34,9 @@ class LearningAgent(Agent):
 
         self.num_trials += 1.0
 
-        self.epsilon = math.pow(self.alpha, self.num_trials)
+        #self.epsilon = math.pow(self.a, self.num_trials)
         #self.epsilon = 1/math.pow(self.num_trials, 2)
+        self.epsilon = math.pow(math.e, self.num_trials * -1 * self.a)
 
         if testing:
             self.epsilon = 0
@@ -190,7 +191,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=10)
+    sim.run(n_test=100, tolerance=0.005)
 
 
 if __name__ == '__main__':
